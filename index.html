@@ -6,360 +6,227 @@
 <title>ROBO ROLETA PRO</title>
 
 <style>
-body{
-    background:#020617;
-    color:#fff;
-    font-family:Arial;
-    text-align:center;
-    margin:0;
-    overflow:hidden;
-}
+body{background:#020617;color:#fff;font-family:Arial;text-align:center;margin:0;overflow:hidden;}
+#fundo{position:fixed;width:100%;height:100%;z-index:0;pointer-events:none;}
 
-/* FUNDO */
-#fundo{
-    position:fixed;
-    width:100%;
-    height:100%;
-    z-index:0;
-    pointer-events:none;
-}
+#roletaBox{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:320px;height:320px;opacity:0.04;}
+#aro{position:absolute;inset:0;border-radius:50%;border:12px solid #6b4a1e;}
+#roleta{position:absolute;inset:12px;border-radius:50%;
+background:conic-gradient(red 0 30deg,black 30 60deg,red 60 90deg,black 90 120deg,red 120 150deg,black 150 180deg,red 180 210deg,black 210 240deg,red 240 270deg,black 270 300deg,red 300 330deg,green 330 360deg);}
+#bola{position:absolute;top:50%;left:50%;width:6px;height:6px;background:#fff;border-radius:50%;box-shadow:0 0 6px #fff;}
 
-/* ROLETA */
-#roletaBox{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:320px;
-    height:320px;
-    opacity:0.06;
-}
-
-#aro{
-    position:absolute;
-    inset:0;
-    border-radius:50%;
-    border:12px solid #6b4a1e;
-}
-
-#roleta{
-    position:absolute;
-    inset:12px;
-    border-radius:50%;
-    background:conic-gradient(
-        red 0deg 30deg, black 30deg 60deg,
-        red 60deg 90deg, black 90deg 120deg,
-        red 120deg 150deg, black 150deg 180deg,
-        red 180deg 210deg, black 210deg 240deg,
-        red 240deg 270deg, black 270deg 300deg,
-        red 300deg 330deg, green 330deg 360deg
-    );
-}
-
-#bola{
-    position:absolute;
-    top:50%;
-    left:50%;
-    width:6px;
-    height:6px;
-    background:#fff;
-    border-radius:50%;
-    box-shadow:0 0 6px #fff;
-}
-
-/* EMOJIS */
-.item{
-    position:absolute;
-    font-size:28px;
-    opacity:0.35;
-    animation:cair linear forwards;
-}
-
-@keyframes cair{
-    0%{transform:translateY(-50px);}
-    100%{transform:translateY(110vh);}
-}
+.item{position:absolute;font-size:28px;opacity:0.3;animation:cair linear forwards;}
+@keyframes cair{0%{transform:translateY(-50px);}100%{transform:translateY(110vh);}}
 
 /* UI */
-.container{
-    position:relative;
-    z-index:1;
-}
+.container{position:relative;z-index:1;}
+#titulo{font-size:38px;font-weight:bold;text-shadow:0 0 15px #38bdf8;}
 
-#titulo{
-    font-size:36px;
+#placar{margin:10px 0;}
+
+#historico{display:flex;overflow-x:auto;gap:6px;max-width:320px;margin:10px auto;}
+.bolinha{min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;}
+.vermelho{background:#dc2626;box-shadow:0 0 10px #dc2626;}
+.preto{background:#000;box-shadow:0 0 10px #fff;}
+.verde{background:#16a34a;box-shadow:0 0 10px #16a34a;}
+
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;max-width:320px;margin:15px auto;}
+.btn{background:#111;color:#fff;padding:12px;border:none;}
+
+/* RESULTADO NEON */
+#resultadoNeon{
+    font-size:30px;
     font-weight:bold;
-    text-shadow:0 0 12px #38bdf8;
-}
-
-#versao{
-    font-size:14px;
-    color:#aaa;
-    margin-bottom:5px;
-}
-
-/* CONTADOR */
-#placar{
-    margin:10px 0;
-    font-size:16px;
-}
-
-/* HISTÓRICO */
-#historico{
-    display:flex;
-    overflow-x:auto;
-    gap:6px;
-    max-width:320px;
-    margin:10px auto;
-}
-
-.bolinha{
-    min-width:36px;
-    height:36px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-}
-
-.vermelho{
-    background:#dc2626;
-    box-shadow:0 0 8px #dc2626, 0 0 20px #dc2626;
-}
-.preto{
-    background:#000;
-    box-shadow:0 0 8px #fff, 0 0 20px #fff;
-}
-.verde{
-    background:#16a34a;
-    box-shadow:0 0 8px #16a34a, 0 0 20px #16a34a;
-}
-
-/* BOTÕES */
-.grid{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:6px;
-    max-width:320px;
-    margin:15px auto;
-}
-
-.btn{
-    background:#111;
-    color:#fff;
-    padding:12px;
-    border:none;
-}
-
-/* STATUS */
-#status{
-    font-size:28px;
     margin-top:10px;
-    font-weight:bold;
 }
 
 .win{
     color:#22c55e;
-    animation:pulseWin 1.2s infinite;
+    animation:neonWin 1s infinite alternate;
 }
 
 .loss{
     color:#ef4444;
-    animation:pulseLoss 1.2s infinite;
+    animation:neonLoss 1s infinite alternate;
 }
 
-@keyframes pulseWin{
-    0%{transform:scale(1);text-shadow:0 0 5px #22c55e;}
-    50%{transform:scale(1.15);text-shadow:0 0 30px #22c55e;}
-    100%{transform:scale(1);text-shadow:0 0 5px #22c55e;}
-}
-
-@keyframes pulseLoss{
-    0%{transform:scale(1);text-shadow:0 0 5px #ef4444;}
-    50%{transform:scale(1.15);text-shadow:0 0 30px #ef4444;}
-    100%{transform:scale(1);text-shadow:0 0 5px #ef4444;}
-}
-
-/* ANALISE */
-#analise{
-    font-size:20px;
+.gale{
     color:#facc15;
+    animation:neonGale 1s infinite alternate;
 }
 
-/* ASSINATURA */
-#assinatura{
-    margin-top:15px;
-    font-size:12px;
-    color:#888;
+@keyframes neonWin{
+    from{ text-shadow:0 0 10px #22c55e;}
+    to{ text-shadow:0 0 40px #22c55e;}
 }
+@keyframes neonLoss{
+    from{ text-shadow:0 0 10px #ef4444;}
+    to{ text-shadow:0 0 40px #ef4444;}
+}
+@keyframes neonGale{
+    from{ text-shadow:0 0 10px #facc15;}
+    to{ text-shadow:0 0 40px #facc15;}
+}
+
+#analise{color:#facc15;}
+#assinatura{margin-top:10px;font-size:12px;color:#888;}
 </style>
 </head>
 
 <body>
 
 <div id="fundo">
-    <div id="roletaBox">
-        <div id="aro"></div>
-        <div id="roleta"></div>
-        <div id="bola"></div>
-    </div>
+<div id="roletaBox">
+<div id="aro"></div>
+<div id="roleta"></div>
+<div id="bola"></div>
+</div>
 </div>
 
 <div class="container">
-    <div id="titulo">🎯 ROBO ROLETA PRO</div>
-    <div id="versao">Versão PRO</div>
+<div id="titulo">🎯 ROBO ROLETA PRO</div>
 
-    <div id="placar">
-        🟢 Vitórias: <span id="vitorias">0</span> |
-        🔴 Derrotas: <span id="derrotas">0</span>
-    </div>
+<div id="placar">
+🟢 Vitórias: <span id="vitorias">0</span> |
+🔴 Derrotas: <span id="derrotas">0</span>
+</div>
 
-    <div class="grid" id="botoes"></div>
-    <div id="historico"></div>
-    <div id="sugestao"></div>
-    <div id="analise"></div>
-    <div id="status"></div>
+<div class="grid" id="botoes"></div>
+<div id="historico"></div>
 
-    <div id="assinatura">Desenvolvido por Henrique Sampaio</div>
+<div id="sugestao"></div>
+<div id="resultadoNeon"></div>
+<div id="analise"></div>
+
+<div id="assinatura">Desenvolvido por Henrique Sampaio</div>
 </div>
 
 <script>
-// FUNDO ROLETA
-let angulo = 0;
-function animarFundo(){
-    let roleta = document.getElementById("roleta");
-    let bola = document.getElementById("bola");
-    function loop(){
-        angulo += 0.15;
-        roleta.style.transform = `rotate(${angulo}deg)`;
-        bola.style.transform = `rotate(${angulo*2}deg) translateX(120px)`;
-        requestAnimationFrame(loop);
-    }
-    loop();
-}
-animarFundo();
+// FUNDO
+let ang=0;
+(function loop(){
+    ang+=0.1;
+    roleta.style.transform=`rotate(${ang}deg)`;
+    bola.style.transform=`rotate(${ang*2}deg) translateX(120px)`;
+    requestAnimationFrame(loop);
+})();
 
 // EMOJIS
-const fundo = document.getElementById("fundo");
-const itens = ["🎲","💰","🪙","🔴","⚫","🟢"];
-
+const itens=["🎲","💰","🪙","🔴","⚫","🟢"];
 setInterval(()=>{
-    let el = document.createElement("div");
-    el.className = "item";
-    el.innerText = itens[Math.floor(Math.random()*itens.length)];
-    el.style.left = Math.random()*100 + "vw";
-    el.style.animationDuration = (8 + Math.random()*6) + "s";
+    let el=document.createElement("div");
+    el.className="item";
+    el.innerText=itens[Math.floor(Math.random()*itens.length)];
+    el.style.left=Math.random()*100+"vw";
+    el.style.animationDuration=(8+Math.random()*5)+"s";
     fundo.appendChild(el);
-    setTimeout(()=> el.remove(),14000);
-},500);
+    setTimeout(()=>el.remove(),14000);
+},600);
 
 // ROBÔ
-const vermelhos = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+const vermelhos=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
 
-let historico = [];
-let entradaAtual = null;
-let gale = 0;
+let historico=[],entradaAtual=null,gale=0,vitorias=0,derrotas=0;
 
-let vitorias = 0;
-let derrotas = 0;
+function cor(n){if(n===0)return"verde";return vermelhos.includes(n)?"vermelho":"preto";}
+function duzia(n){if(n<=12)return 1;if(n<=24)return 2;return 3;}
+function alto(n){return n>=19?"alto":"baixo";}
 
-function cor(n){
-    if(n===0) return "verde";
-    return vermelhos.includes(n) ? "vermelho" : "preto";
-}
-
-// BOTÕES
 for(let i=0;i<=36;i++){
-    let btn = document.createElement("button");
-    btn.innerText = i;
-    btn.className = "btn";
-    btn.onclick = () => registrar(i);
-    document.getElementById("botoes").appendChild(btn);
+    let b=document.createElement("button");
+    b.innerText=i;
+    b.className="btn";
+    b.onclick=()=>registrar(i);
+    botoes.appendChild(b);
 }
+
+const historicoDiv=document.getElementById("historico");
 
 // REGISTRAR
 function registrar(num){
     historico.push(num);
 
-    let div = document.createElement("div");
-    div.className = "bolinha " + cor(num);
-    div.innerText = num;
-    document.getElementById("historico").appendChild(div);
-
-    document.getElementById("historico").scrollLeft =
-        document.getElementById("historico").scrollWidth;
+    let d=document.createElement("div");
+    d.className="bolinha "+cor(num);
+    d.innerText=num;
+    historicoDiv.appendChild(d);
+    historicoDiv.scrollLeft=historicoDiv.scrollWidth;
 
     if(entradaAtual){
         verificarResultado(num);
-    } else {
+    }else{
         analisar();
     }
 }
 
 // ANALISE
-let pontos = 0;
+let p=0;
 setInterval(()=>{
     if(!entradaAtual){
-        pontos = (pontos+1)%4;
-        document.getElementById("analise").innerText =
-            "🎡 Em análise" + ".".repeat(pontos);
+        p=(p+1)%4;
+        analise.innerText="🎡 Em análise"+".".repeat(p);
     }
 },500);
 
+// ANALISAR
 function analisar(){
-    if(historico.length < 10) return;
+    if(historico.length<6) return;
 
-    let ultimos = historico.slice(-10);
-    let cores = ultimos.map(cor);
+    let ultimos=historico.slice(-6);
+    let cores=ultimos.map(cor);
 
-    let vermelhosCount = cores.filter(c=>c==="vermelho").length;
-    let pretosCount = cores.filter(c=>c==="preto").length;
+    let v=cores.filter(c=>c==="vermelho").length;
+    let pr=cores.filter(c=>c==="preto").length;
 
-    let sugestao = null;
+    let tipo=null,valor=null;
 
-    if(vermelhosCount >=7){
-        sugestao = "preto";
-    } else if(pretosCount >=7){
-        sugestao = "vermelho";
-    }
+    if(v>=4){tipo="cor";valor="vermelho";}
+    if(pr>=4){tipo="cor";valor="preto";}
 
-    if(!sugestao) return;
+    if(!tipo) return;
 
-    document.getElementById("analise").innerText = "";
-    entradaAtual = sugestao;
+    entradaAtual={tipo,valor};
 
-    document.getElementById("sugestao").innerHTML =
-        "🎯 ENTRADA:<br>" + sugestao.toUpperCase() + " + (0)";
+    sugestao.innerHTML="🎯 ENTRADA:<br>"+valor.toUpperCase()+" + (0)";
+    resultadoNeon.innerHTML="";
+    gale=0;
 }
 
 // RESULTADO
 function verificarResultado(num){
-    let ganhou = num===0 || cor(num)===entradaAtual;
-    let status = document.getElementById("status");
+    let ganhou = num===0 || cor(num)===entradaAtual.valor;
 
     if(ganhou){
         vitorias++;
-        document.getElementById("vitorias").innerText = vitorias;
+        resultadoNeon.innerHTML="✅ VITÓRIA";
+        resultadoNeon.className="win";
 
-        status.innerHTML = "✅ VITÓRIA";
-        status.className = "win";
-        entradaAtual = null;
-    } else {
+        sugestao.innerHTML="";
+        entradaAtual=null;
+        gale=0;
+
+    }else{
         if(gale===0){
             gale=1;
-            status.innerHTML = "⚠️ GALE 1";
-        } else {
+            resultadoNeon.innerHTML="⚠️ GALE 1";
+            resultadoNeon.className="gale";
+        }else{
             derrotas++;
-            document.getElementById("derrotas").innerText = derrotas;
+            resultadoNeon.innerHTML="❌ DERROTA";
+            resultadoNeon.className="loss";
 
-            status.innerHTML = "❌ DERROTA";
-            status.className = "loss";
-            entradaAtual = null;
-            gale = 0;
+            sugestao.innerHTML="";
+            entradaAtual=null;
+            gale=0;
         }
     }
+
+    vitoriasEl.innerText=vitorias;
+    derrotasEl.innerText=derrotas;
 }
+
+const vitoriasEl=document.getElementById("vitorias");
+const derrotasEl=document.getElementById("derrotas");
 </script>
 
 </body>
