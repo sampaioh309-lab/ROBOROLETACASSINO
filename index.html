@@ -40,33 +40,13 @@ background:conic-gradient(red 0 30deg,black 30 60deg,red 60 90deg,black 90 120de
     margin-top:10px;
 }
 
-.win{
-    color:#22c55e;
-    animation:neonWin 1s infinite alternate;
-}
+.win{color:#22c55e;animation:neonWin 1s infinite alternate;}
+.loss{color:#ef4444;animation:neonLoss 1s infinite alternate;}
+.gale{color:#facc15;animation:neonGale 1s infinite alternate;}
 
-.loss{
-    color:#ef4444;
-    animation:neonLoss 1s infinite alternate;
-}
-
-.gale{
-    color:#facc15;
-    animation:neonGale 1s infinite alternate;
-}
-
-@keyframes neonWin{
-    from{ text-shadow:0 0 10px #22c55e;}
-    to{ text-shadow:0 0 40px #22c55e;}
-}
-@keyframes neonLoss{
-    from{ text-shadow:0 0 10px #ef4444;}
-    to{ text-shadow:0 0 40px #ef4444;}
-}
-@keyframes neonGale{
-    from{ text-shadow:0 0 10px #facc15;}
-    to{ text-shadow:0 0 40px #facc15;}
-}
+@keyframes neonWin{from{text-shadow:0 0 10px #22c55e;}to{text-shadow:0 0 40px #22c55e;}}
+@keyframes neonLoss{from{text-shadow:0 0 10px #ef4444;}to{text-shadow:0 0 40px #ef4444;}}
+@keyframes neonGale{from{text-shadow:0 0 10px #facc15;}to{text-shadow:0 0 40px #facc15;}}
 
 #analise{color:#facc15;}
 #assinatura{margin-top:10px;font-size:12px;color:#888;}
@@ -102,6 +82,7 @@ background:conic-gradient(red 0 30deg,black 30 60deg,red 60 90deg,black 90 120de
 </div>
 
 <script>
+
 // FUNDO
 let ang=0;
 (function loop(){
@@ -127,10 +108,12 @@ setInterval(()=>{
 const vermelhos=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
 
 let historico=[],entradaAtual=null,gale=0,vitorias=0,derrotas=0;
+let esperandoNovoGiro=false;
 
-function cor(n){if(n===0)return"verde";return vermelhos.includes(n)?"vermelho":"preto";}
-function duzia(n){if(n<=12)return 1;if(n<=24)return 2;return 3;}
-function alto(n){return n>=19?"alto":"baixo";}
+function cor(n){
+    if(n===0)return"verde";
+    return vermelhos.includes(n)?"vermelho":"preto";
+}
 
 for(let i=0;i<=36;i++){
     let b=document.createElement("button");
@@ -144,6 +127,13 @@ const historicoDiv=document.getElementById("historico");
 
 // REGISTRAR
 function registrar(num){
+
+    // 🔒 trava após vitória/derrota
+    if(esperandoNovoGiro){
+        esperandoNovoGiro=false;
+        return;
+    }
+
     historico.push(num);
 
     let d=document.createElement("div");
@@ -154,9 +144,9 @@ function registrar(num){
 
     if(entradaAtual){
         verificarResultado(num);
-    }else{
-        analisar();
     }
+
+    analisar();
 }
 
 // ANALISE
@@ -170,6 +160,7 @@ setInterval(()=>{
 
 // ANALISAR
 function analisar(){
+    if(entradaAtual || esperandoNovoGiro) return;
     if(historico.length<6) return;
 
     let ultimos=historico.slice(-6);
@@ -178,14 +169,14 @@ function analisar(){
     let v=cores.filter(c=>c==="vermelho").length;
     let pr=cores.filter(c=>c==="preto").length;
 
-    let tipo=null,valor=null;
+    let valor=null;
 
-    if(v>=4){tipo="cor";valor="vermelho";}
-    if(pr>=4){tipo="cor";valor="preto";}
+    if(v>=4) valor="vermelho";
+    if(pr>=4) valor="preto";
 
-    if(!tipo) return;
+    if(!valor) return;
 
-    entradaAtual={tipo,valor};
+    entradaAtual={valor};
 
     sugestao.innerHTML="🎯 ENTRADA:<br>"+valor.toUpperCase()+" + (0)";
     resultadoNeon.innerHTML="";
@@ -194,9 +185,11 @@ function analisar(){
 
 // RESULTADO
 function verificarResultado(num){
+
     let ganhou = num===0 || cor(num)===entradaAtual.valor;
 
     if(ganhou){
+
         vitorias++;
         resultadoNeon.innerHTML="✅ VITÓRIA";
         resultadoNeon.className="win";
@@ -205,12 +198,19 @@ function verificarResultado(num){
         entradaAtual=null;
         gale=0;
 
+        // 🔥 impede nova entrada imediata
+        esperandoNovoGiro=true;
+
     }else{
+
         if(gale===0){
+
             gale=1;
             resultadoNeon.innerHTML="⚠️ GALE 1";
             resultadoNeon.className="gale";
+
         }else{
+
             derrotas++;
             resultadoNeon.innerHTML="❌ DERROTA";
             resultadoNeon.className="loss";
@@ -218,6 +218,9 @@ function verificarResultado(num){
             sugestao.innerHTML="";
             entradaAtual=null;
             gale=0;
+
+            // 🔥 trava também na derrota
+            esperandoNovoGiro=true;
         }
     }
 
@@ -227,6 +230,7 @@ function verificarResultado(num){
 
 const vitoriasEl=document.getElementById("vitorias");
 const derrotasEl=document.getElementById("derrotas");
+
 </script>
 
 </body>
